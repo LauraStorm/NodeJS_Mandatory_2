@@ -32,11 +32,15 @@ router.post("/auth/login", async (req, res) => {
     //console.log("valid password: ", validPassword);
 
     if(!validPassword){
+        
         return res.send({message: "Password not correct"});
     }
-    req.session.username = validUser.username
-    res.send({message: "YAY - you are logged in"});
+    req.session.username = validUser.username;
+    console.log("YAY - you are logged in");
+    console.log(req.session);
 
+    res.send(req.session);
+    //{message: "YAY - you are logged in"}
 });
 
 router.get("/auth/logout", (req, res) => {

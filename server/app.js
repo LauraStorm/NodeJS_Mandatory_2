@@ -54,7 +54,8 @@ app.use("/auth", rateLimit({
 function checkAuth (req, res, next){
     console.log("I am auth checker - middleware");
     if(!req.session.username){
-        return res.send({message: "You are not allowed. Please login!"});
+        //return res.send({message: "You are not allowed. Please login!"});
+        return res.redirect("/auth/login");
     }
     next();
 }
@@ -67,6 +68,9 @@ app.use(authRouter);
 
 import contactRouter from "./routers/contactRouter.js";
 app.use(contactRouter);
+
+import mailRouter from "./routers/mailRouter.js";
+app.use(mailRouter);
 
 
 /* --------- PORT --------- */

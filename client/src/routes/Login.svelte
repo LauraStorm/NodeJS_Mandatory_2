@@ -1,7 +1,17 @@
 <script>
-    import { onMount } from "svelte";
-    import { BASE_URL } from "../../store/urlDomain.js";
+    import { BASE_URL } from "../store/urlDomain.js";
+    import { user } from "../store/user.js";
+    import { useNavigate, useLocation } from "svelte-navigator";
+    import toastr from "toastr";
+    import 'toastr/build/toastr.css';
     
+    const navigate = useNavigate();
+    
+    toastr.options ={
+        "positionClass": "toast-top-center",
+        "timeOut": "2000"
+    }
+   
     // extracts 
     let baseURL = "";
     BASE_URL.subscribe(value => {
@@ -24,16 +34,41 @@
                 'Content-Type': 'application/json'
             },
             body: userToJSON,
+            credentials:"include"
         });
+
         const data = await loginResponse.json();
         console.log(data);
+
         
+        if (data.username === username){
+            const authenticatedUser = data.username;
+            console.log("Authenticated user is set: ",authenticatedUser);
+            user.set(authenticatedUser);
+            //suceess
+            toastr["success"](`Successe - Welcome back ${authenticatedUser}`);
+            setTimeout( () => {
+                navigate("/contact", {replace:true});
+            },2000);
+            
+        } else {
+            // error
+            toastr["error"](`Sorry - ${data.message}`);
+            setTimeout( () => {
+               navigate("/contact", {replace:true});
+            },2000);
+            
+        }
+        
+
         // Reset form
         username = "";
         password = "";
     }
+   
     
 </script>
+
 
 <h3>Login </h3>
 <form on:submit|preventDefault={validateLogin}>
@@ -48,6 +83,5 @@
     
 </form>
 
-<style>
 
-</style>
+
