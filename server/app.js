@@ -1,23 +1,14 @@
-/* --------- DOTENV --------- */
 import dotenv from "dotenv";
 dotenv.config();
 
-/* --------- EXPRESS --------- */
-import express, { urlencoded } from "express";
+import express from "express";
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
 
-/* --------- PATH TO CLIENT --------- */
-import path from "path"
-app.use(express.static(path.resolve("../client/dist")));
-
-/* --------- HELMET --------- */
 import helmet from "helmet";
 app.use(helmet());
 
-/* --------- CORS --------- */
 import cors from "cors";
 app.use(cors({
     credentials:true,
@@ -52,25 +43,50 @@ app.use("/auth", rateLimit({
 
 /* --------- MIDDLEWARES --------- */
 function checkAuth (req, res, next){
-    console.log("I am auth checker - middleware");
+    console.log("I am auth checker");
     if(!req.session.username){
+        console.log(" message: You are not allowed. Please login!");
         return res.send({message: "You are not allowed. Please login!"});
     }
     next();
 }
+app.use("/profile", checkAuth);
 
-app.use("/contact", checkAuth);
+function adminChecker(req, res, next){
+    console.log("I am admin checker");
+    if(!req.session.role === 1){
+        console.log("You are not allowed - you are not an admin");
+        return res.send({message: "You are not allowed. Please login!"});
+    }
+    next();
+}
+app.use("/upComing", checkAuth, adminChecker);
+
+function guestChecker(req, res, next){
+    console.log("I am guest checker");
+    if(!req.session.role === 3){
+        console.log("You are not allowed - you are not login");
+        return res.send({message: "You are not allowed. Please login!"});
+    }
+    next();
+}
+app.use("/reviews", checkAuth, guestChecker);
 
 /* --------- ROUTES --------- */
 import authRouter from "./routers/authRouter.js";
 app.use(authRouter);
 
-import contactRouter from "./routers/contactRouter.js";
-app.use(contactRouter);
+import profileRouter from "./routers/profileRouter.js";
+app.use(profileRouter);
 
-import mailRouter from "./routers/mailRouter.js";
-app.use(mailRouter);
+import signupRouter from "./routers/signupRouter.js";
+app.use(signupRouter);
 
+import upComingMoviesRouter from "./routers/upComingMoviesRouter.js";
+app.use(upComingMoviesRouter);
+
+import reviewsRouter from "./routers/reviewRouter.js";
+app.use(reviewsRouter);
 
 /* --------- PORT --------- */
 const PORT = process.env.PORT || 8080;
