@@ -2,7 +2,7 @@
 import nodemailer from "nodemailer";
 
 // async..await is not allowed in global scope, must use a wrapper
-export async function confirmSignUp(username, email ) {
+export async function sendSignupConfirmation(username, email) {   
 
   // Generate test SMTP service account from ethereal.email
   // Only needed if you don't have a real mail account for testing

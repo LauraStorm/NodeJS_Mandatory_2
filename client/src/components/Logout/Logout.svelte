@@ -1,18 +1,12 @@
 <script>
-    import { BASE_URL } from "../store/urlDomain";
-    import { user } from "../store/user.js";
+    import { BASE_URL } from "../../stores/urlDomain";
+    import { user, mail, role } from "../../stores/user.js";
     import { Link } from "svelte-navigator";
     import toastr from "toastr";
     import 'toastr/build/toastr.css';
 
-    // extracts 
-    let baseURL = "";
-        BASE_URL.subscribe(value => {
-        baseURL = value;
-    });
-
     async function handleLogout() {
-        const logoutURL =`${baseURL}/auth/logout`;
+        const logoutURL = $BASE_URL+ "/auth/logout";
         console.log(logoutURL);
         
         const logoutResponse = await fetch(logoutURL, {
@@ -23,8 +17,9 @@
         console.log(data);
         
         $user = null;
-        //suceess
-        toastr["info"](`BYE BYE`);
+        $mail = null;
+        $role = null;
+        toastr.info(`BYE BYE`);
     }
 </script>
 

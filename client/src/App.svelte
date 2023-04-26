@@ -1,59 +1,54 @@
 <script>
-  import { Router, Route, Link } from "svelte-navigator";
-  import Login from "./routes/Login.svelte";
-  import PrivateRoute from "./components/routing/PrivateRoute.svelte";
-  import { user } from "./store/user.js"
-  import Home from "./routes/Home.svelte";
-  import SignUp from "./routes/SignUp.svelte";
-  import Contact from "./routes/Contact.svelte";
-  import AccessError from "./routes/AccessError.svelte";
-  import Logout from "./routes/Logout.svelte";
-    
-  $: isAuthenticated = $user; 
-
+  import { Router, Route } from "svelte-navigator";
+  import PrivateRoute from "./components/privateRouting/PrivateRoute.svelte";
+  import Navbar from "./components/navbar/Navbar.svelte";
+  import Home from "./pages/Home/Home.svelte";
+  import Profile from "./pages/Profile/Profile.svelte";
+  import Login from "./pages/Login/Login.svelte";
+  import SignUp from "./pages/SignUp/SignUp.svelte";
+  import Review from "./pages/Review/Review.svelte";
+  import SeeReviews from "./pages/SeeReview/SeeReviews.svelte";
+  import Movies from "./pages/Movies/Movies.svelte";
+  import UpComing from "./pages/UpComing.svelte/UpComing.svelte";
+  import Benefits from "./pages/Benefits/Benefits.svelte";
+  
 </script>
 
 
 <Router>
-  <header>
-    {#if isAuthenticated}
-      <nav>
-        <Link to="/">Home</Link>
-        <Link to="/contact">Contact</Link>
-        <Logout/>
-      </nav>
-    {:else}
-      <nav>
-        <Link to="/">Home</Link>
-        <Link to="/signup">Sign up</Link>
-        <Link to="/contact">Contact</Link>
-      </nav>
-    {/if}
-  </header>
-  
+  <Navbar/>
+
   <main>
-    <!--
-      Public routes
-    -->
+    <!-- Public routes-->
     <Route path="/" component={Home}></Route>
     <Route path="/login" component={Login}></Route>
     <Route path="/signup" component={SignUp}></Route>
-    <Route path="/access-error" component={AccessError}></Route>
-    
+    <Route path="/movies" component={Movies}></Route>
 
-    <!--
-      Private routes
-    -->
-
-    <PrivateRoute path="/contact" let:location>
-      <Contact/>
+    <!-- Private routes-->
+    <PrivateRoute path="/profile">
+      <Profile/>
     </PrivateRoute>
-   
+
+
+    <!-- Admin: Private routes-->
+    <PrivateRoute path="/seeReviews">
+      <SeeReviews/>
+    </PrivateRoute>
+
+    <PrivateRoute path="/upComing">
+      <UpComing/>
+    </PrivateRoute>
+
+    <!-- User: Private routes-->
+    <PrivateRoute path="/benefits">
+      <Benefits/>
+    </PrivateRoute>
+
+    <!-- Guest: Private routes-->
+     <PrivateRoute path="/review">
+      <Review/>
+    </PrivateRoute>
+    
   </main>
-
-
 </Router>
-
-<style>
-
-</style>
