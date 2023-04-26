@@ -2,45 +2,31 @@ import { Router } from "express";
 const router = Router();
 
 import bcrypt from "bcrypt";
-
-/* --- DB INFO--- */
-
-const userOnePasswordPlaintext = "kage123";
-const userOnehashedPasword = await bcrypt.hash(userOnePasswordPlaintext, 12);
-
-const userTwoPasswordPlaintext = "admin123";
-const userTwohashedPasword = await bcrypt.hash(userTwoPasswordPlaintext, 12);
-
-const users = [
-    { username: "lbs", password: userOnehashedPasword },
-    { username: "admin", password: userTwohashedPasword }
-];
-
-/* ---------- */
+import db from "../database/connection.js";
 
 router.post("/auth/login", async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, email } = req.body;
 
-    const validUser = users.find(user => user.username === username);
-    //console.log("valid user: ", validUser);
-
-    if(!validUser){
+    const validUser = await db.get("SELECT * FROM users WHERE email=?", [email]);
+    
+    if(!validUser) {
         return res.send({message: "User does not exist"});
     }
 
     const validPassword = await bcrypt.compare(password, validUser.password);
-    //console.log("valid password: ", validPassword);
+    
 
-    if(!validPassword){
-        
+    if(!validPassword) {
         return res.send({message: "Password not correct"});
     }
+
     req.session.username = validUser.username;
-    console.log("YAY - you are logged in");
+    req.session.email = validUser.email;
+    req.session.role = validUser.role_id;
     console.log(req.session);
 
     res.send(req.session);
-    //{message: "YAY - you are logged in"}
+    
 });
 
 router.get("/auth/logout", (req, res) => {
