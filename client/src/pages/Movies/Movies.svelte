@@ -3,9 +3,9 @@
 
 <div id="movies">
     <img src="../public/moviespage/movies.png" alt="movies">
- </div>
+</div>
  
- <style>
+<style>
     #movies{
         display: flex;
         justify-content: center;
@@ -13,7 +13,6 @@
 
     #movies img {
         max-width: 90%;
-        max-height: 90%;
-            
+        max-height: 90%;   
     }
- </style>
+</style>

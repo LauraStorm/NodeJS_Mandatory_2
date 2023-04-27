@@ -1,10 +1,9 @@
-import dotenv from "dotenv";
-dotenv.config()
+import "dotenv/config";
+
 import db from "./connection.js";
 import bcrypt from "bcrypt";
 
 const isDeleteMode = process.argv.findIndex((argument) => argument === "delete_mode") === -1 ? false : true;
-console.log(isDeleteMode);
 
 if (isDeleteMode){
     db.exec("DROP TABLE IF EXISTS users");
@@ -43,7 +42,6 @@ db.exec(
     );
     `
 );
-
 
 // DML
 const adminPasswordPlaintext = process.env.ADMIN_PASSWORD;

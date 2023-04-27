@@ -15,12 +15,8 @@
 
     async function handleSignUp (){
         const userToJSON = JSON.stringify({username, password, email}); 
-        
-        // post til backend 
-        const signupURL = $BASE_URL + "/signup";
-        console.log(signupURL);
-        
-        const signupResponse = await fetch(signupURL, {
+
+        const signupResponse = await fetch($BASE_URL + "/signup", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -33,7 +29,7 @@
      
         if (data.message === username){
             toastr.success("User Successfully created. Welcome " + data.message);
-        } else if (data.message === "Failed") {
+        } else if (data.message === "Failed"){
             toastr.error("You already have an account!");
         } else {
             toastr.error("Error creating user");
@@ -47,7 +43,6 @@
         password = ""; 
         email = ""; 
     }
-
 </script>
 
 <h3>Sign up Page</h3>
@@ -75,7 +70,6 @@
     
 </form>
 
-
 <style>
     .form {
         border: 0.3em solid #c1272d;
@@ -96,5 +90,4 @@
     label {
       font-weight: bold;
     }
-  
 </style>

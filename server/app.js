@@ -1,21 +1,22 @@
-import dotenv from "dotenv";
-dotenv.config();
+import "dotenv/config";
 
 import express from "express";
 const app = express();
 
 app.use(express.json());
 
+// HELMET
 import helmet from "helmet";
 app.use(helmet());
 
+// CORS
 import cors from "cors";
 app.use(cors({
     credentials:true,
     origin:true
 }));
 
-/* --------- SESSION --------- */
+// SESSION
 import session from "express-session";
 app.use(session({
     secret: process.env.SESSION_SECRET,  
@@ -24,55 +25,51 @@ app.use(session({
     cookie: { secure: false }            
 }));
 
-/* --------- RATE LIMIT ON ENDPOINTS --------- */
+// RATELIMIT 
 import rateLimit from 'express-rate-limit';
 const apiLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, 
+    windowMs: 10 * 60 * 1000, 
     max: 100, 
     standardHeaders: true, 
     legacyHeaders: false, 
 });
+
 app.use(apiLimiter);
 
 app.use("/auth", rateLimit({
 	windowMs: 15 * 60 * 1000, 
-	max: 100, 
+	max: 5, 
 	standardHeaders: true, 
 	legacyHeaders: false, 
 }));
 
-/* --------- MIDDLEWARES --------- */
-function checkAuth (req, res, next){
-    console.log("I am auth checker");
-    if(!req.session.username){
-        console.log(" message: You are not allowed. Please login!");
+// MIDDLEWARES - AUTH + ROLES
+function authChecker (req, res, next){
+    if (!req.session.object.username){
         return res.send({message: "You are not allowed. Please login!"});
     }
     next();
 }
-app.use("/profile", checkAuth);
 
 function adminChecker(req, res, next){
-    console.log("I am admin checker");
-    if(!req.session.role === 1){
-        console.log("You are not allowed - you are not an admin");
+    if (!req.session.object.role === 1){
         return res.send({message: "You are not allowed. Please login!"});
     }
     next();
 }
-app.use("/upComing", checkAuth, adminChecker);
 
-function guestChecker(req, res, next){
-    console.log("I am guest checker");
-    if(!req.session.role === 3){
-        console.log("You are not allowed - you are not login");
+function guestChecker(req, res, next ){
+    if (!req.session.object.role === 3){
         return res.send({message: "You are not allowed. Please login!"});
     }
     next();
 }
-app.use("/reviews", checkAuth, guestChecker);
 
-/* --------- ROUTES --------- */
+app.use("/profile", authChecker);
+app.use("/upComing", authChecker, adminChecker);
+app.use("/reviews", authChecker, guestChecker);
+
+// IMPORT ROUTES
 import authRouter from "./routers/authRouter.js";
 app.use(authRouter);
 
@@ -88,10 +85,10 @@ app.use(upComingMoviesRouter);
 import reviewsRouter from "./routers/reviewRouter.js";
 app.use(reviewsRouter);
 
-/* --------- PORT --------- */
+// PORTS
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, (error) => {
-    if(error){
+    if (error){
         console.log(error);
     }
     console.log("Server is running on PORT: ", PORT);

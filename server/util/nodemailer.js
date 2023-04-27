@@ -1,4 +1,3 @@
-"use strict";
 import nodemailer from "nodemailer";
 
 // async..await is not allowed in global scope, must use a wrapper
@@ -33,4 +32,3 @@ export async function sendSignupConfirmation(username, email) {
   // Preview only available when sending through an Ethereal account
   console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));// output: https://ethereal.email/message/WaQKMgKddxQDoou...
 }
-

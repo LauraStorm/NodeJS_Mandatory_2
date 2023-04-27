@@ -7,5 +7,3 @@ const connection = await open({
 });
 
 export default connection;
-
-

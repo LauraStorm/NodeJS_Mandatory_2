@@ -14,11 +14,9 @@
     let password = "";
 
     async function validateLogin (){
-        const userToJSON = JSON.stringify({email, password}) 
-
-        const loginURL = $BASE_URL + "/auth/login";
+        const userToJSON = JSON.stringify({email, password}); 
         
-        const loginResponse = await fetch(loginURL, {
+        const loginResponse = await fetch($BASE_URL + "/auth/login", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -29,48 +27,38 @@
 
         const data = await loginResponse.json();
 
-        if (data.email === email){
-            const validUser = data.username;
-            const ValidEmail = data.email;
-            const validRole = data.role;
+        if (data.object.email === email){
+           
+            $user = data.object.username;
+            $mail = data.object.email;
+            $role = data.object.role;
 
-            $user = validUser;
-            $mail = ValidEmail;
-            $role = validRole;
+            toastr.success(`Success - Welcome back ${$user}`);
+            navigate("/profile", {replace:true});
 
-            console.log("Authenticated user is set: ", validUser);
-            toastr.success(`Success - Welcome back ${validUser}`);
-
-            setTimeout( () => {
-                navigate("/profile", {replace:true});
-            },1000);
-            
         } else {
-            // error
             toastr.error("Sorry wrong data. Try again"); 
         }
-        // Reset form
         email = "";
         password = "";
     }
-    
 </script>
 
 <h3>Login </h3>
 <form on:submit|preventDefault={validateLogin} class="login-form">
 
     <div class="box">
-        <label for="email">Email:</label> <br>
+        <label for="email">Email:</label><br>
         <input type="email" placeholder="Enter email here" name="email" bind:value={email} required>
     </div>
     
     <div class="box">
-        <label for="password">Password:</label> <br>
+        <label for="password">Password:</label><br>
         <input type="password" placeholder="Enter password here" name="password" bind:value={password} required>
     </div>
     
     <div class="box">
-        <button type=submit > Login </button>  
+        <button type=submit>Login</button>  
     </div>
 </form>
 
@@ -94,5 +82,4 @@
     label {
       font-weight: bold;
     }
-
 </style>

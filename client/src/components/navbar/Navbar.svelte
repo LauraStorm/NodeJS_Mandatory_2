@@ -1,11 +1,10 @@
 <script>
-    import { Link } from "svelte-navigator";
-    import { user, role } from "../../stores/user.js"
-    import Logout from "../Logout/Logout.svelte";
-    
-    $: roleType = $role;
-    $: username = $user; 
-
+  import { Link } from "svelte-navigator";
+  import { user, role } from "../../stores/user.js"
+  import Logout from "../Logout/Logout.svelte";
+  
+  $: roleType = $role;
+  $: username = $user; 
 </script>
 
 <header>

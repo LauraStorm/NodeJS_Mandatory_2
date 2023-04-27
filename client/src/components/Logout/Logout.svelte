@@ -6,19 +6,15 @@
     import 'toastr/build/toastr.css';
 
     async function handleLogout() {
-        const logoutURL = $BASE_URL+ "/auth/logout";
-        console.log(logoutURL);
-        
-        const logoutResponse = await fetch(logoutURL, {
+
+        await fetch($BASE_URL+ "/auth/logout", {
             credentials: "include"
         });
 
-        const data = await logoutResponse.json();
-        console.log(data);
-        
         $user = null;
         $mail = null;
         $role = null;
+        
         toastr.info(`BYE BYE`);
     }
 </script>

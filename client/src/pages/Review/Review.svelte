@@ -1,6 +1,6 @@
 <script>
-    import { reviews } from "../../stores/reviews.js";
-    import { user, mail } from "../../stores/user.js";
+    import { movieReviews } from "../../stores/movieReviews.js";
+    import { user } from "../../stores/user.js";
     import toastr from "toastr";
     import 'toastr/build/toastr.css';
 
@@ -10,15 +10,13 @@
     } 
 
     $: username = $user;
-    $: email = $mail;
 
     let movieTitle = "";
     let reviewMessage = "";
 
     function handleCreateMovieReview (){
-        reviews.update((currentMovieReview) => {
-            const createdReview = { title: movieTitle, review: reviewMessage,  fromUser: username, fromEmail: email , handled: false };
-            console.log(createdReview);
+        movieReviews.update((currentMovieReview) => {
+            const createdReview = { title: movieTitle, review: reviewMessage, fromUser: username, handled: false };
             currentMovieReview.push(createdReview);
             toastr.success("Thanks, your review is send");
             return currentMovieReview;
@@ -37,7 +35,6 @@
 
 <label for="reviewMessage">Write review:</label> <br>
 <textarea name="reviewMessage" required bind:value={reviewMessage}></textarea> <br><br>
-
 
 <button on:click={handleCreateMovieReview}>Send Movie Review</button>
 

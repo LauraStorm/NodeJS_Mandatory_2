@@ -1,5 +1,5 @@
 <script>
-    import {BASE_URL} from "../../stores/urlDomain.js";
+    import { BASE_URL } from "../../stores/urlDomain.js";
     import { onMount } from "svelte";
 
     let newMovies = [];
@@ -10,9 +10,7 @@
         });
         const { data: upComingMovies} = await response.json();
         newMovies = upComingMovies;
-
     });
-
 </script>
 
 <h3>Upcoming Movies</h3>
